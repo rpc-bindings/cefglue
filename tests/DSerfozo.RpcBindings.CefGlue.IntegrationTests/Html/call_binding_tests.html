@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        async function returnValueBound() {
+            const bound = await binding.require('bindingTest');
+            const returnBound = await bound.getObj('str');
+            const result = await returnBound.getValue();
+
+            if (result !== 'str') {
+                throw new Error('Return value is not bound');
+            }
+        }
+
+        async function callbackValueBound() {
+            const bound = await binding.require('bindingTest2');
+
+            const promise = new Promise(function (resolve, reject) {
+                bound.testCallback(async function (result) {
+                    const res = await result.getValue();
+                    if (res === 'str') {
+                        resolve();
+                    } else {
+                        reject('Callback not bound.');
+                    }
+                }, 'str');
+            });
+
+            await promise;
+        }
+
+        async function returnValuePropertiesExtracted() {
+            const bound = await binding.require('bindingTest3');
+            const returnBound = await bound.getPropObj('str');
+            const result = await returnBound.getValue();
+            const propResult = returnBound.value;
+
+            if (result !== 'str' || propResult !== 'str') {
+                throw new Error('Return value is not bound');
+            }
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        async function testCallback() {
+            const bound = await binding.require('test');
+            const promise = new Promise(async function (resolve, reject) {
+                await bound.testCallback(function (result) {
+                    resolve(result);
+                }, 'Hello');
+            });
+            
+            const bool = await promise;
+            if (bool !== 'Hello World!') {
+                throw new Error("Callback is called with: " + bool);
+            }
+        }
+
+        async function testCallbackWithPromise() {
+            const bound = await binding.require('test');
+            const promise = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    resolve('Hello World');
+                }, 2000);
+            });
+            let resolveFunc;
+            const testPromise = new Promise(function (resolve, reject) {
+                resolveFunc = resolve;
+            });
+            const callback = async function (input) {
+                const result = await promise;
+                return result;
+            };
+
+            const testResult = await bound.testPromiseCallback(callback);
+
+            if (testResult !== 'Hello World') {
+                throw new Error('Callback with promise failed: ' + testResult)
+            }
+        }
+
+        async function testCallbackDispose() {
+            const bound = await binding.require('test');
+            const testResult = await bound.testCallbackDispose(function () { });
+        }
+
+        async function testCallbackBound() {
+            const bound = await binding.require('test');
+            const self = { s: 12 };
+            const promise = new Promise(async function (resolve, reject) {
+                await bound.testCallback((function (result) {
+                    console.log(self);
+                    if (self && self.s === 12) {
+                        resolve(self.s);
+                    } else {
+                        reject('Callback not bound.');
+                    }
+                }).bind(self), 'Hello');
+            });
+
+            await promise;
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

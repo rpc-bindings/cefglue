@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript">
+        let resolveFunc;
+        const promise = new Promise(function (resolve, reject) {
+            resolveFunc = resolve;
+        });
+
+        function frameLoaded() {
+            resolveFunc();
+        }
+
+        async function testBoundObjectCache() {
+            const bound1 = await binding.require('cachetest1');
+            const bound2 = await binding.require('cachetest1');
+
+            if (bound1 !== bound2) {
+                throw new Error('Object is not cached.');
+            }
+        }
+
+        async function testBoundObjectNotCacheInterFrame() {
+            document.getElementById('frame').src = 'cache_frame.html';
+
+            const bound1 = await binding.require('cachetest2');
+            await promise;
+
+            await window.frames[0].promise;
+            const boundInFrame = window.frames[0].bound;
+
+            if (bound1 === boundInFrame) {
+                throw new Error('Object is cached interframe');
+            }
+        }
+
+        async function testObjectDescriptorCache() {
+            const bound = await binding.require('cachetest3');
+        }
+
+        async function testCachePerBrowser() {
+            const bound1 = await binding.require('cachetest4');
+            const boundValue1 = await bound1.getValue();
+            const popup = window.open(window.location);
+
+            const bound2 = await popup.binding.require('cachetest4');
+            const boundValue2 = await bound2.getValue();
+            if (boundValue1 === boundValue2) {
+                throw new Error('Object cached across browsers.');
+            }
+        }
+    </script>
+</head>
+<body>
+<iframe id="frame" onload="frameLoaded()"></iframe>
+</body>
+</html>

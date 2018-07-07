@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        async function testPocoInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testPocoInput({
+                name: 'name',
+                obj: {
+                    num: 2.3
+                },
+                value: 2
+            });
+
+            if (!bool) {
+                throw new Error("Invalid poco conversion.");
+            }
+        }
+
+        async function testLoopPocoInput() {
+            const bound = await binding.require('test');
+            const obj = { Name: 'name' };
+            obj.obj = obj;
+            const bool = await bound.testLoopInput(obj);
+            if (!bool) {
+                throw new Error("Invalid looped object graph conversion.");
+            }
+        }
+
+        async function testPocoResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testPocoResult();
+
+            const expected = JSON.stringify({
+                name: 'name',
+                obj: {
+                    num: 2.3
+                },
+                value: 2
+            });
+
+            if (JSON.stringify(bool) !== expected) {
+                throw new Error("Invalid poco conversion: " + JSON.stringify(bool));
+            }
+        }    
+
+        async function testLoopPocoResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testLoopResult();
+
+            const expected = JSON.stringify({
+                Loop: null,
+                Name: 'name',
+            });
+
+            if (JSON.stringify(bool) !== expected) {
+                throw new Error("Invalid poco conversion: " + JSON.stringify(bool));
+            }
+        }
+    
+    </script>
+</head>
+<body>
+
+</body>
+</html>

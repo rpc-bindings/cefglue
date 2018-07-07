@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        async function testInt64Result() {
+            const bound = await binding.require('test');
+            const num = await bound.testInt64();
+
+            if (num !== -9223372036854775806) {
+                throw new Error("Invalid Int64 conversion");
+            }
+        }
+
+        async function testBoolResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testBool();
+
+            if (bool !== true) {
+                throw new Error("Invalid bool conversion.");
+            }
+        }
+
+        async function testIntResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testInt();
+
+            if (bool !== -2147483647) {
+                throw new Error("Invalid int conversion: " + bool);
+            }
+        }
+
+        async function testUIntResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testUInt();
+
+            if (bool !== 4294967295) {
+                throw new Error("Invalid uint conversion: " + bool);
+            }
+        }
+
+        async function testUInt64Result() {
+            const bound = await binding.require('test');
+            const bool = await bound.testUInt64();
+
+            if (bool !== 18446744073709551614) {
+                throw new Error("Invalid uint64 conversion: " + bool);
+            }
+        }
+
+        async function testDecimalResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testDecimal();
+
+            if (bool !== 300.5) {
+                throw new Error("Invalid decimal conversion: " + bool);
+            }
+        }
+
+        async function testSingleResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testSingle();
+
+            const diff = Math.abs(bool - 1.23456678);
+            if (diff > 0.0000001 ) {
+                throw new Error("Invalid single conversion: " + bool);
+            }
+        }
+
+        async function testDoubleResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testDouble();
+
+            const diff = Math.abs(bool - 1.23456789134565677890124556);
+            if (diff > 0.000000000000000000000000001) {
+                throw new Error("Invalid double conversion: " + bool);
+            }
+        }
+
+        async function testByteResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testByte();
+
+            if (bool !== 2) {
+                throw new Error("Invalid byte conversion: " + bool);
+            }
+        }
+
+        async function testSByteResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testSByte();
+
+            if (bool !== -2) {
+                throw new Error("Invalid byte conversion: " + bool);
+            }
+        }
+
+        async function testInt16Result() {
+            const bound = await binding.require('test');
+            const bool = await bound.testInt16();
+
+            if (bool !== -10000) {
+                throw new Error("Invalid byte conversion: " + bool);
+            }
+        }
+
+        async function testUInt16Result() {
+            const bound = await binding.require('test');
+            const bool = await bound.testUInt16();
+
+            if (bool !== 20000) {
+                throw new Error("Invalid byte conversion: " + bool);
+            }
+        }
+
+        async function testCharResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testChar();
+
+            if (bool !== 'a') {
+                throw new Error("Invalid byte conversion: " + bool);
+            }
+        }
+
+        async function testDateResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testDate();
+
+            const isoString = bool.toISOString();
+
+            if (isoString !== '2019-05-02T20:12:23.450Z') {
+                throw new Error("Invalid time conversion: " + bool);
+            }
+        }
+
+        async function testArrayResult() {
+            const bound = await binding.require('test');
+            const bool = await bound.testArray();
+
+            const expected = JSON.stringify([1, 2, 3, 4]);
+
+            if (JSON.stringify(bool) !== expected) {
+                throw new Error("Invalid array conversion: " + bool);
+            }
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

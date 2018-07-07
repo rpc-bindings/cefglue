@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        async function testInt64Input() {
+            const bound = await binding.require('test');
+            //javascript can't represent this as an integer so using smaller number
+            //const num = await bound.testInt64(-9223372036854775806);
+            const num = await bound.testInt64(-922337203685477);
+
+            if (!num) {
+                throw new Error("Invalid Int64 conversion");
+            }
+        }
+
+        async function testBoolInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testBool(true);
+
+            if (!bool) {
+                throw new Error("Invalid bool conversion.");
+            }
+        }
+
+        async function testIntInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testInt(-2147483647);
+
+            if (!bool) {
+                throw new Error("Invalid int conversion.");
+            }
+        }
+
+        async function testUIntInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testUInt(4294967295);
+
+            if (!bool) {
+                throw new Error("Invalid uint conversion.");
+            }
+        }
+
+        async function testUInt64Input() {
+            const bound = await binding.require('test');
+            const bool = await bound.testUInt64(1844674407370955);
+
+            if (!bool) {
+                throw new Error("Invalid uint64 conversion.");
+            }
+        }
+
+        async function testDecimalInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testDecimal(300.5);
+
+            if (!bool) {
+                throw new Error("Invalid decimal conversion.");
+            }
+        }
+
+        async function testSingleInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testSingle(1.23456678);
+
+            if (!bool) {
+                throw new Error("Invalid single conversion.");
+            }
+        }
+
+        async function testDoubleInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testDouble(1.23456789134565677890124556);
+
+            if (!bool) {
+                throw new Error("Invalid double conversion.");
+            }
+        }
+
+        async function testByteInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testByte(2);
+
+            if (!bool) {
+                throw new Error("Invalid byte conversion.");
+            }
+        }
+
+        async function testSByteInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testSByte(-2);
+
+            if (!bool) {
+                throw new Error("Invalid sbyte conversion.");
+            }
+        }
+
+        async function testInt16Input() {
+            const bound = await binding.require('test');
+            const bool = await bound.testInt16(-10000);
+
+            if (!bool) {
+                throw new Error("Invalid short conversion.");
+            }
+        }
+
+        async function testUInt16Input() {
+            const bound = await binding.require('test');
+            const bool = await bound.testUInt16(20000);
+
+            if (!bool) {
+                throw new Error("Invalid ushort conversion.");
+            }
+        }
+
+        async function testCharInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testChar('a');
+
+            if (!bool) {
+                throw new Error("Invalid char conversion.");
+            }
+        }
+
+        async function testDateInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testDate(new Date('2019-05-02T20:12:23.450Z'));
+
+            if (!bool) {
+                throw new Error("Invalid time conversion.");
+            }
+        }
+
+        async function testArrayInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testArray([1,2,3,4]);
+
+            if (!bool) {
+                throw new Error("Invalid array sconversion.");
+            }
+        }
+
+        async function testNullableInput() {
+            const bound = await binding.require('test');
+            const bool = await bound.testNullable(2);
+
+            if (!bool) {
+                throw new Error("Invalid nullable sconversion.");
+            }
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

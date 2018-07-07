@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="cef.redist.x86" Version="3.3282.1741" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="Moq" Version="4.8.1" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DSerfozo.RpcBindings.CefGlue\DSerfozo.RpcBindings.CefGlue.csproj" />
+    <ProjectReference Include="..\DSerfozo.CefGlue.SubProcess\DSerfozo.CefGlue.SubProcess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Html\binding_tests.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Html\cache_frame.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Html\cache_tests.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Html\callback_tests.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Html\call_binding_tests.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Html\object_tests.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Html\primitive_fromv8_tests.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Html\primitive_tov8_tests.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyCef" AfterTargets="Build">
+    <Copy SourceFiles="@(CefRedist32)" DestinationFolder="$(OutDir)%(RecursiveDir)" />
+  </Target>
+
+</Project>

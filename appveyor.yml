@@ -1,0 +1,19 @@
+version: 1.0.0-CI{build}
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+install:
+- git submodule update --init --recursive
+- dotnet restore
+build_script:
+- cmd: msbuild DSerfozo.RpcBindings.CefGlue.sln /t:Build;Pack /p:Configuration=Release /p:BuildNumber=%APPVEYOR_BUILD_NUMBER% /p:ProjectOutputPath=%cd%\dist
+test_script:
+- cmd: '%xunit20%\xunit.console.x86 tests\DSerfozo.RpcBindings.CefGlue.IntegrationTests\bin\Release\net461\DSerfozo.RpcBindings.CefGlue.IntegrationTests.dll'
+artifacts:
+- path: src\DSerfozo.RpcBindings.CefGlue\bin\Release\DSerfozo.RpcBindings.CefGlue*.nupkg
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/dserfozo/api/v2/package
+  api_key:
+    secure: uz70X1rDufUiuaV59aw5GKHF6lLvRCe9QkBZQkjGaxwAP/LSuVHdRAdEwRIZhkai
+  skip_symbols: true

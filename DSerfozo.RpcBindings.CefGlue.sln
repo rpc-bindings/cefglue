@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F783B55D-8CA5-45A8-AC22-A4C5C24D1FC0}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8B1F5C30-2D2B-4631-B99F-A15FB1429DB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BA9588B5-3A47-4360-A6DC-3470120B863D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSerfozo.CefGlue.SubProcess", "tests\DSerfozo.CefGlue.SubProcess\DSerfozo.CefGlue.SubProcess.csproj", "{5175A596-80E1-4D02-A38D-341CDE69AB23}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSerfozo.RpcBindings.CefGlue", "src\DSerfozo.RpcBindings.CefGlue\DSerfozo.RpcBindings.CefGlue.csproj", "{F435BA62-D98E-4DE3-B6C0-4DE53F5071C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSerfozo.RpcBindings.CefGlue.IntegrationTests", "tests\DSerfozo.RpcBindings.CefGlue.IntegrationTests\DSerfozo.RpcBindings.CefGlue.IntegrationTests.csproj", "{EF63D315-9227-49CE-A8F4-BA70FD25F949}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5175A596-80E1-4D02-A38D-341CDE69AB23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5175A596-80E1-4D02-A38D-341CDE69AB23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5175A596-80E1-4D02-A38D-341CDE69AB23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5175A596-80E1-4D02-A38D-341CDE69AB23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F435BA62-D98E-4DE3-B6C0-4DE53F5071C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F435BA62-D98E-4DE3-B6C0-4DE53F5071C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F435BA62-D98E-4DE3-B6C0-4DE53F5071C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F435BA62-D98E-4DE3-B6C0-4DE53F5071C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF63D315-9227-49CE-A8F4-BA70FD25F949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF63D315-9227-49CE-A8F4-BA70FD25F949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF63D315-9227-49CE-A8F4-BA70FD25F949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF63D315-9227-49CE-A8F4-BA70FD25F949}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5175A596-80E1-4D02-A38D-341CDE69AB23} = {BA9588B5-3A47-4360-A6DC-3470120B863D}
+		{F435BA62-D98E-4DE3-B6C0-4DE53F5071C8} = {8B1F5C30-2D2B-4631-B99F-A15FB1429DB1}
+		{EF63D315-9227-49CE-A8F4-BA70FD25F949} = {BA9588B5-3A47-4360-A6DC-3470120B863D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4788EFF0-E104-4324-9512-190F64CCBECC}
+	EndGlobalSection
+EndGlobal

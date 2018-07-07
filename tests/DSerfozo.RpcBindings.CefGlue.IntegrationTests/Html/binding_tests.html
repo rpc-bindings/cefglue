@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        function testBindingObjectExists() {
+            if (typeof binding !== 'object') {
+                throw new Error('No binding object');
+            }
+        }
+
+        function requireReturnsPromise() {
+            const bindPromise = binding.require('test');
+            if (!bindPromise || !bindPromise.then) {
+                throw new Error('Require result is not a Promise');
+            }
+        }
+
+        async function testObjectBound() {
+            const bound = await binding.require('test');
+            if (typeof bound !== 'object') {
+                throw new Error('Bound object does not exist.');
+            }
+        }
+
+        async function testBoundObjectFunctionPresent() {
+            const bound = await binding.require('test');
+            if (typeof bound.testFunc !== 'function') {
+                throw new Error('Bound object does not have testFunc.');
+            }
+        }
+
+        async function testBoundObjectFunctionReturnsPromise() {
+            const bound = await binding.require('test');
+            const promise = bound.testFunc();
+
+            if (!promise.then) {
+                throw new Error('testFunc did not return a Promise.');
+            }
+        }
+
+        async function testSimpleStringConcatFunction() {
+            const bound = await binding.require('test');
+            const result = await bound.testFuncString('Hello');            
+
+            if (result !== 'Hello World!') {
+                throw new Error('Result is not Hello World, but: ' + result);
+            }
+        }
+        
+        async function testBoundObjectNotExists() {
+            try {
+                const bound = await binding.require('test');
+                throw new Error('Non existing object request should throw.');
+            }
+            catch (e) {
+
+            }
+        }
+    
+    </script>
+</head>
+<body>
+
+</body>
+</html>

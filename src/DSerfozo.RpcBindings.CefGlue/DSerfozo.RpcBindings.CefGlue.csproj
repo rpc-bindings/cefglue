@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>../build/key.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Common\Serialization\ComplexObjectSerializer.cs" />
+    <Compile Remove="Common\Serialization\RpcMessageSerializer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Renderer\Javascript\extension.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Renderer\Javascript\extension.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DSerfozo.RpcBindings" Version="1.0.0-CI6" />
+    <PackageReference Include="DSerfozo.Unofficial.Xilium.CefGlue" Version="64.0.0" />
+  </ItemGroup>
+
+</Project>
