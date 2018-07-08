@@ -58,7 +58,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
             if (browserDisposed == 1)
                 return;
 
-            var message = (ICefProcessMessage)CefProcessMessage.Create(Messages.RpcRequestMessage);
+            var message = CefProcessMessage.Create(Messages.RpcRequestMessage);
             try
             {
                 message.Arguments.SetValue(0, objectSerializer.Serialize(rpcRequest, new HashSet<object>()));
@@ -69,6 +69,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
             {
                 //when the browser is already disposed
                 //this can happen from a finalized callback for example
+            }
+            finally
+            {
                 message.Dispose();
             }
         }
