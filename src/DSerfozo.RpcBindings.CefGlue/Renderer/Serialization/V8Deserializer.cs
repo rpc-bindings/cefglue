@@ -1,9 +1,12 @@
 ﻿using System;
+using DSerfozo.CefGlue.Contract.Common;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Binding;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
 using DSerfozo.RpcBindings.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
 {
@@ -16,12 +19,12 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
             this.functionCallPromiseRegistry = functionCallPromiseRegistry;
         }
 
-        public bool CanHandle(CefValue cefValue, Type targetType)
+        public bool CanHandle(ICefValue cefValue, Type targetType)
         {
-            return targetType == typeof(CefV8Value);
+            return targetType == typeof(ICefV8Value);
         }
 
-        public object Deserialize(CefValue value, Type targetType, ObjectSerializer objectSerializer)
+        public object Deserialize(ICefValue value, Type targetType, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(value, targetType))
             {
@@ -72,7 +75,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
                             using (var cefValue = list.GetValue(i))
                             {
                                 array.SetValue(i,
-                                    (CefV8Value) objectSerializer.Deserialize(cefValue, typeof(CefV8Value)));
+                                    (ICefV8Value) objectSerializer.Deserialize(cefValue, typeof(ICefV8Value)));
                             }
                         }
 
@@ -92,7 +95,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
                         var obj = CefV8Value.CreateObject();
                         foreach (var key in valDict.GetKeys())
                         {
-                            obj.SetValue(key, (CefV8Value)objectSerializer.Deserialize(valDict.GetValue(key), typeof(CefV8Value)));
+                            obj.SetValue(key, (ICefV8Value)objectSerializer.Deserialize(valDict.GetValue(key), typeof(ICefV8Value)));
                         }
                         return obj;
                     }

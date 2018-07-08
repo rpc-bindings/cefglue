@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
-using Xilium.CefGlue;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
 {
@@ -10,9 +10,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
     {
         protected override bool HandleSeen(HashSet<object> seen, object current, Type currentType)
         {
-            if (currentType == typeof(CefV8Value))
+            if (typeof(ICefV8Value).IsAssignableFrom(currentType))
             {
-                var result = !seen.OfType<CefV8Value>().Any(v => v.IsSame(current as CefV8Value));
+                var result = !seen.OfType<ICefV8Value>().Any(v => v.IsSame(current as ICefV8Value));
                 if (result)
                 {
                     seen.Add(current);

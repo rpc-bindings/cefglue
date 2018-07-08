@@ -1,4 +1,4 @@
-﻿using Xilium.CefGlue;
+﻿using DSerfozo.CefGlue.Contract.Renderer;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
 {
@@ -8,9 +8,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
 
         public bool Success { get; set; }
 
-        public CefV8Value Result { get; set; }
+        public ICefV8Value Result { get; set; }
 
-        public CefV8Context Context { get; set; }
+        public ICefV8Context Context { get; set; }
 
         public string Error { get; set; }
     }

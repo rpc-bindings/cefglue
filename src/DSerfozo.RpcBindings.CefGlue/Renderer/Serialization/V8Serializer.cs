@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using DSerfozo.CefGlue.Contract.Common;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Services;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
 using DSerfozo.RpcBindings.Contract.Marshaling.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
 {
@@ -21,10 +24,10 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
 
         public bool CanHandle(Type type)
         {
-            return type == typeof(CefV8Value);
+            return typeof(ICefV8Value).IsAssignableFrom(type);
         }
 
-        public CefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(source?.GetType()))
             {
@@ -39,7 +42,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
             var result = CefValue.Create();
             result.SetNull();
 
-            var value = (CefV8Value)source;
+            var value = (ICefV8Value)source;
             if (value.IsString)
             {
                 result.SetString(value.GetStringValue());

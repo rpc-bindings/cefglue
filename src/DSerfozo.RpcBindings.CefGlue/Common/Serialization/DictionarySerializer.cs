@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Common;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -13,13 +14,13 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return type != null && IsDictionaryType(type);
         }
 
-        public bool CanHandle(CefValue cefValue, Type targetType)
+        public bool CanHandle(ICefValue cefValue, Type targetType)
         {
             return IsDictionary(cefValue) && 
                   (IsDictionaryType(targetType) || targetType == typeof(object));
         }
 
-        private static bool IsDictionary(CefValue value)
+        private static bool IsDictionary(ICefValue value)
         {
             var result = value.GetValueType() == CefValueType.Dictionary;
 
@@ -35,7 +36,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return result;
         }
 
-        public CefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(source?.GetType()))
             {
@@ -61,7 +62,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             }
         }
 
-        public object Deserialize(CefValue value, Type targetType, ObjectSerializer objectSerializer)
+        public object Deserialize(ICefValue value, Type targetType, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(value, targetType))
             {

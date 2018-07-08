@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Services;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Handlers
 {
-    public class ExtensionHandler : CefV8Handler
+    public class ExtensionHandler : ICefV8Handler
     {
-        private readonly List<Tuple<CefV8Context, CefV8Value, CefV8Value, CefV8Value>> promiseFunc =
-            new List<Tuple<CefV8Context, CefV8Value, CefV8Value, CefV8Value>>();
+        private readonly List<Tuple<ICefV8Context, ICefV8Value, ICefV8Value, ICefV8Value>> promiseFunc =
+            new List<Tuple<ICefV8Context, ICefV8Value, ICefV8Value, ICefV8Value>>();
         private readonly IDictionary<int, BrowserController> browserControllers;
 
         public event Action<PromiseResult> PromiseResult;
 
-        public Tuple<CefV8Value, CefV8Value, CefV8Value> TryGetPromiseFunc(CefV8Context ctx)
+        public Tuple<ICefV8Value, ICefV8Value, ICefV8Value> TryGetPromiseFunc(ICefV8Context ctx)
         {
             var res = promiseFunc.FirstOrDefault(f => f.Item1.IsSame(ctx));
             if (res != null)
@@ -31,7 +32,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Handlers
             this.browserControllers = browserControllers;
         }
 
-        protected override bool Execute(string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue, out string exception)
+        public bool Execute(string name, ICefV8Value obj, ICefV8Value[] arguments, out ICefV8Value returnValue, out string exception)
         {
             returnValue = CefV8Value.CreateNull();
             exception = null;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DSerfozo.CefGlue.Contract.Common;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Binding;
@@ -10,13 +12,14 @@ using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
 using DSerfozo.RpcBindings.Contract.Communication.Model;
 using DSerfozo.RpcBindings.Execution.Model;
 using DSerfozo.RpcBindings.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer
 {
     public class BrowserController : IDisposable
     {
-        private readonly Dictionary<long, IDictionary<string, CefV8Value>> objectCache = new Dictionary<long, IDictionary<string, CefV8Value>>();
+        private readonly Dictionary<long, IDictionary<string, ICefV8Value>> objectCache = new Dictionary<long, IDictionary<string, ICefV8Value>>();
         private readonly Dictionary<string, ObjectDescriptor> objectDescriptorCache =
             new Dictionary<string, ObjectDescriptor>();
 
@@ -24,9 +27,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
         private readonly SavedValueRegistry<Callback> callbackRegistry = new SavedValueRegistry<Callback>();
         private readonly SavedValueFactory<Promise> functionCallPromiseRegistry;
         private readonly SavedValueFactory<Promise> dynamicObjectPromiseRegistry;
-        private readonly CefBrowser browser;
+        private readonly ICefBrowser browser;
 
-        public BrowserController(CefBrowser browser, PromiseService promiseService)
+        public BrowserController(ICefBrowser browser, PromiseService promiseService)
         {
             this.browser = browser;
             functionCallPromiseRegistry = new SavedValueFactory<Promise>(promiseService.CreatePromise);
@@ -36,14 +39,14 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             objectSerializer.Deserializers.Insert(0, new V8Deserializer(functionCallPromiseRegistry));
         }
 
-        public bool OnProcessMessage(CefProcessMessage message)
+        public bool OnProcessMessage(ICefProcessMessage message)
         {
             if (message.Name != Messages.RpcRequestMessage)
             {
                 return false;
             }
 
-            var response = (RpcRequest<CefValue>)objectSerializer.Deserialize(message.Arguments.GetValue(0), typeof(RpcRequest<CefValue>));
+            var response = (RpcRequest<ICefValue>)objectSerializer.Deserialize(message.Arguments.GetValue(0), typeof(RpcRequest<ICefValue>));
             var handled = false;
             if (response?.CallbackExecution != null)
             {
@@ -73,7 +76,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             return handled;
         }
 
-        public CefV8Value OnBindingRequire(CefV8Value cefV8Value)
+        public ICefV8Value OnBindingRequire(ICefV8Value cefV8Value)
         {
             using (var context = CefV8Context.GetCurrentContext())
             using (var frame = context.GetFrame())
@@ -92,7 +95,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
                     }
                     else
                     {
-                        var response = new RpcResponse<CefValue>
+                        var response = new RpcResponse<ICefValue>
                         {
                             DynamicObjectRequest = new DynamicObjectRequest
                             {
@@ -112,7 +115,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
         }
 
-        public void OnBeforeNavigate(CefFrame frame, CefRequest request, CefNavigationType navigation_type, bool isRedirect)
+        public void OnBeforeNavigate(ICefFrame frame, ICefRequest request, CefNavigationType navigation_type, bool isRedirect)
         {
             if (objectCache.TryGetValue(frame.Identifier, out var frameObjectCache))
             {
@@ -121,15 +124,15 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
         }
 
-        public void OnContextCreated(CefFrame frame, CefV8Context context)
+        public void OnContextCreated(ICefFrame frame, ICefV8Context context)
         {
             if (!objectCache.ContainsKey(frame.Identifier))
             {
-                objectCache.Add(frame.Identifier, new Dictionary<string, CefV8Value>());
+                objectCache.Add(frame.Identifier, new Dictionary<string, ICefV8Value>());
             }
         }
 
-        public void OnContextReleased(CefFrame frame, CefV8Context context)
+        public void OnContextReleased(ICefFrame frame, ICefV8Context context)
         {
             if (objectCache.TryGetValue(frame.Identifier, out var frameObjectCache))
             {
@@ -150,7 +153,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             browser.Dispose();
         }
 
-        private void SendResponse(RpcResponse<CefValue> response)
+        private void SendResponse(RpcResponse<ICefValue> response)
         {
             var msg = CefProcessMessage.Create(Messages.RpcResponseMessage);
             var serialized = objectSerializer.Serialize(response, new HashSet<object>());
@@ -160,7 +163,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
         }
 
 
-        private void HandleBindingResult(RpcRequest<CefValue> response)
+        private void HandleBindingResult(RpcRequest<ICefValue> response)
         {
             var dynamicObjectResult = response.DynamicObjectResult;
             if (dynamicObjectPromiseRegistry.Has(dynamicObjectResult.ExecutionId))
@@ -205,7 +208,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
         }
 
-        private void HandleMethodResult(RpcRequest<CefValue> response)
+        private void HandleMethodResult(RpcRequest<ICefValue> response)
         {
             if (functionCallPromiseRegistry.Has(response.MethodResult.ExecutionId))
             {
@@ -214,7 +217,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
                 {
                     if (response.MethodResult.Success)
                     {
-                        promise.Resolve((CefV8Value)objectSerializer.Deserialize(response.MethodResult.Result, typeof(CefV8Value)));
+                        promise.Resolve((ICefV8Value)objectSerializer.Deserialize(response.MethodResult.Result, typeof(ICefV8Value)));
                     }
                     else
                     {
@@ -224,7 +227,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
         }
 
-        private void HandledCallbackExecution(RpcRequest<CefValue> response)
+        private void HandledCallbackExecution(RpcRequest<ICefValue> response)
         {
             if (callbackRegistry.Has(response.CallbackExecution.FunctionId))
             {
@@ -233,9 +236,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
             else
             {
-                var rpcResponse = new RpcResponse<CefValue>
+                var rpcResponse = new RpcResponse<ICefValue>
                 {
-                    CallbackResult = new CallbackResult<CefValue>
+                    CallbackResult = new CallbackResult<ICefValue>
                     {
                         ExecutionId = response.CallbackExecution.ExecutionId,
                         Success = false,

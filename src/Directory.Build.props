@@ -2,7 +2,7 @@
   <Import Project="../common/build/version.props" />
 
   <PropertyGroup>
-    <Product>DSerfozo.RpcBindings</Product>
+    <Product>DSerfozo.RpcBindings.CefGlue</Product>
     <RepositoryUrl>https://github.com/rpc-bindings/cefglue</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>

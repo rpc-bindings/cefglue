@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DSerfozo.CefGlue.Common;
+using DSerfozo.CefGlue.Contract.Common;
 using DSerfozo.RpcBindings.CefGlue.Browser;
 using DSerfozo.RpcBindings.CefGlue.Common;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
@@ -148,7 +150,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util
             }
         }
 
-        public class Client : MessageClient
+        public class Client : DSerfozo.CefGlue.Browser.CefClientBase
         {
             private readonly LoadHandler loadHandler = new LoadHandler();
             private readonly DialogHandler dialogHandler = new DialogHandler();
@@ -157,6 +159,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util
             private readonly Render render = new Render();
 
             public Client(TaskCompletionSource<CefBrowser> taskCompletionSource)
+                :base(new MessageClient())
             {
                 lifeSpanHandler = new LifecycleHandler(taskCompletionSource);
             }
@@ -196,12 +199,15 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util
         private readonly TaskCompletionSource<CefBrowser> browserTcs = new TaskCompletionSource<CefBrowser>();
         private readonly Task<CefBrowser> browser;
         private readonly Client client;
+        private readonly MessageClient messageClient;
         private readonly CefGlueRpcBindingHost rpcBindingHost;
         private readonly ITypeSerializer objectDescriptorSerializer;
 
         public Client CefClient => client;
 
-        public RpcBindingHost<CefValue> BindingHost => rpcBindingHost;
+        public MessageClient MessageClient => messageClient;
+
+        public RpcBindingHost<ICefValue> BindingHost => rpcBindingHost;
 
         public IBindingRepository Repository => rpcBindingHost.Repository;
 
@@ -214,6 +220,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util
         public Browser(bool createBrowser = true)
         {
             client = new Client(browserTcs);
+            messageClient = client.CefClient as MessageClient;
             browser = browserTcs.Task;
             var windowInfo = CefWindowInfo.Create();
             windowInfo.WindowlessRenderingEnabled = true;
@@ -234,7 +241,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util
         {
             var actualBrowser = await browser.ConfigureAwait(false);
             
-            (rpcBindingHost.Connection as Connection).Initialize(actualBrowser, CefClient);
+            (rpcBindingHost.Connection as Connection).Initialize(actualBrowser.ToInterface(), messageClient);
         }
 
         public async Task LoadAsync(string url)
@@ -278,7 +285,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util
             {
                 if (args.Message.Name == "TestDone")
                 {
-                    client.ProcessMessageReceived -= Message;
+                    messageClient.ProcessMessageReceived -= Message;
 
                     var success = args.Message.Arguments.GetBool(0);
                     if (!success)
@@ -302,7 +309,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util
             }
 
             client.RequestHandler.Crash += Crash;
-            client.ProcessMessageReceived += Message;
+            messageClient.ProcessMessageReceived += Message;
             actualBrowser.GetMainFrame().ExecuteJavaScript($"test.run({name});", null, 0);
 
             await tcs.Task.ConfigureAwait(false);

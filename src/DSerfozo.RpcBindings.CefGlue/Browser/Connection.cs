@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Reactive.Subjects;
 using System.Threading;
+using DSerfozo.CefGlue.Contract.Common;
 using DSerfozo.RpcBindings.CefGlue.Common;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.Contract.Communication;
 using DSerfozo.RpcBindings.Contract.Communication.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Browser
 {
-    public class Connection : IConnection<CefValue>
+    public class Connection : IConnection<ICefValue>
     {
-        private readonly ISubject<RpcResponse<CefValue>> rpcResponseSubject = new Subject<RpcResponse<CefValue>>();
+        private readonly ISubject<RpcResponse<ICefValue>> rpcResponseSubject = new Subject<RpcResponse<ICefValue>>();
         private readonly ObjectSerializer objectSerializer;
-        private CefBrowser browser;
+        private ICefBrowser browser;
         private MessageClient client;
         private volatile int browserDisposed;
 
@@ -25,7 +26,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
             this.objectSerializer = objectSerializer;
         }
 
-        public void Initialize(CefBrowser browser, MessageClient client)
+        public void Initialize(ICefBrowser browser, MessageClient client)
         {
             this.browser = browser;
             this.client = client;
@@ -42,7 +43,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
                 var response = message.Arguments.GetValue(0);
 
                 var rpcResponse =
-                    (RpcResponse<CefValue>) objectSerializer.Deserialize(response, typeof(RpcResponse<CefValue>));
+                    (RpcResponse<ICefValue>) objectSerializer.Deserialize(response, typeof(RpcResponse<ICefValue>));
 
                 if (rpcResponse != null)
                 {
@@ -52,12 +53,12 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
             }
         }
 
-        public void Send(RpcRequest<CefValue> rpcRequest)
+        public void Send(RpcRequest<ICefValue> rpcRequest)
         {
             if (browserDisposed == 1)
                 return;
 
-            var message = CefProcessMessage.Create(Messages.RpcRequestMessage);
+            var message = (ICefProcessMessage)CefProcessMessage.Create(Messages.RpcRequestMessage);
             try
             {
                 message.Arguments.SetValue(0, objectSerializer.Serialize(rpcRequest, new HashSet<object>()));
@@ -80,7 +81,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
             }
         }
 
-        public IDisposable Subscribe(IObserver<RpcResponse<CefValue>> observer)
+        public IDisposable Subscribe(IObserver<RpcResponse<ICefValue>> observer)
         {
             return rpcResponseSubject.Subscribe(observer);
         }

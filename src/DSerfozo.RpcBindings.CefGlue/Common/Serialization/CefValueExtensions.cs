@@ -1,5 +1,6 @@
 ﻿using System;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Common;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -7,27 +8,27 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
     {
         private static readonly DateTime DateTime = new DateTime(1970, 1, 1).ToUniversalTime();
 
-        public static bool IsType(this CefValue @this, CefTypes type)
+        public static bool IsType(this ICefValue @this, CefTypes type)
         {
             return IsType(() => @this, type);
         }
 
-        public static bool IsType(this CefListValue @this, int index, CefTypes type)
+        public static bool IsType(this ICefListValue @this, int index, CefTypes type)
         {
             return IsType(() => @this.GetValue(index), type);
         }
 
-        public static bool IsType(this CefDictionaryValue @this, string index, CefTypes type)
+        public static bool IsType(this ICefDictionaryValue @this, string index, CefTypes type)
         {
             return IsType(() => @this.GetValue(index), type);
         }
 
-        public static void SetTime(this CefValue @this, DateTime value)
+        public static void SetTime(this ICefValue @this, DateTime value)
         {
             SetTime(_ => @this.SetBinary(_), value);
         }
 
-        public static void SetTime<TIndex>(this CefValue @this, DateTime value, TIndex index = default(TIndex))
+        public static void SetTime<TIndex>(this ICefValue @this, DateTime value, TIndex index = default(TIndex))
         {
             SetTime(_ =>
             {
@@ -59,62 +60,62 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             }, value);
         }
 
-        public static void SetTime(this CefListValue @this, int index, DateTime value)
+        public static void SetTime(this ICefListValue @this, int index, DateTime value)
         {
             SetTime(_ => @this.SetBinary(index, _), value);
         }
 
-        public static void SetTime(this CefDictionaryValue @this, string index, DateTime value)
+        public static void SetTime(this ICefDictionaryValue @this, string index, DateTime value)
         {
             SetTime(_ => @this.SetBinary(index, _), value);
         }
 
-        public static DateTime GetTime(this CefValue @this)
+        public static DateTime GetTime(this ICefValue @this)
         {
             return GetTime(() => @this);
         }
 
-        public static DateTime GetTime(this CefListValue @this, int index)
+        public static DateTime GetTime(this ICefListValue @this, int index)
         {
             return GetTime(() => @this.GetValue(index));
         }
 
-        public static DateTime GetTime(this CefDictionaryValue @this, string index)
+        public static DateTime GetTime(this ICefDictionaryValue @this, string index)
         {
             return GetTime(() => @this.GetValue(index));
         }
 
-        public static long GetInt64(this CefValue @this)
+        public static long GetInt64(this ICefValue @this)
         {
             return GetInt64(() => @this);
         }
 
-        public static long GetInt64(this CefListValue @this, int index)
+        public static long GetInt64(this ICefListValue @this, int index)
         {
             return GetInt64(() => @this.GetValue(index));
         }
 
-        public static long GetInt64(this CefDictionaryValue @this, string index)
+        public static long GetInt64(this ICefDictionaryValue @this, string index)
         {
             return GetInt64(() => @this.GetValue(index));
         }
 
-        public static void SetInt64(this CefValue @this, long value)
+        public static void SetInt64(this ICefValue @this, long value)
         {
             SetInt64(_ => @this.SetBinary(_), value);
         }
 
-        public static void SetInt64(this CefListValue @this, int index, long value)
+        public static void SetInt64(this ICefListValue @this, int index, long value)
         {
             SetInt64(_ => @this.SetBinary(index, _), value);
         }
 
-        public static void SetInt64(this CefDictionaryValue @this, string index, long value)
+        public static void SetInt64(this ICefDictionaryValue @this, string index, long value)
         {
             SetInt64(_ => @this.SetBinary(index, _), value);
         }
 
-        private static bool IsType(Func<CefValue> getValue, CefTypes type)
+        private static bool IsType(Func<ICefValue> getValue, CefTypes type)
         {
             var @this = getValue();
             if (@this.GetValueType() != CefValueType.Binary)
@@ -129,7 +130,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             }
         }
 
-        private static void SetTime(Action<CefBinaryValue> setValue, DateTime value)
+        private static void SetTime(Action<ICefBinaryValue> setValue, DateTime value)
         {
             var totalSecondsBytes = BitConverter.GetBytes(value.ToBinary());
             var buffer = new byte[totalSecondsBytes.Length + 1];
@@ -142,7 +143,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             }
         }
 
-        private static DateTime GetTime(Func<CefValue> getValue)
+        private static DateTime GetTime(Func<ICefValue> getValue)
         {
             var @this = getValue();
             if (@this.GetValueType() != CefValueType.Binary)
@@ -157,7 +158,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             }
         }
 
-        private static long GetInt64(Func<CefValue> getValue)
+        private static long GetInt64(Func<ICefValue> getValue)
         {
             var @this = getValue();
             if (@this.GetValueType() != CefValueType.Binary)
@@ -172,7 +173,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             }
         }
 
-        private static void SetInt64(Action<CefBinaryValue> setValue, long value)
+        private static void SetInt64(Action<ICefBinaryValue> setValue, long value)
         {
             var buffer= new byte[sizeof(long) + 1];
             buffer[0] = (byte) CefTypes.Int64;

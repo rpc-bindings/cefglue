@@ -1,16 +1,16 @@
-﻿using Xilium.CefGlue;
+﻿using DSerfozo.CefGlue.Contract.Renderer;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Services
 {
-    public class PromiseUserData : CefUserData
+    public class PromiseUserData : ICefUserData
     {
-        public CefV8Value PromiseCreator { get; }
+        public ICefV8Value PromiseCreator { get; }
 
-        public CefV8Value IsPromise { get; }
+        public ICefV8Value IsPromise { get; }
 
-        public CefV8Value WaitForPromise { get; }
+        public ICefV8Value WaitForPromise { get; }
 
-        public PromiseUserData(CefV8Value promiseCreator, CefV8Value isPromise, CefV8Value waitForPromise)
+        public PromiseUserData(ICefV8Value promiseCreator, ICefV8Value isPromise, ICefV8Value waitForPromise)
         {
             this.PromiseCreator = promiseCreator;
             this.IsPromise = isPromise;
@@ -18,16 +18,11 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Services
         }
 
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
-
-            if (disposing)
-            {
-                PromiseCreator.Dispose();
-                IsPromise.Dispose();
-                WaitForPromise.Dispose();
-            }
+            PromiseCreator.Dispose();
+            IsPromise.Dispose();
+            WaitForPromise.Dispose();
         }
     }
 }

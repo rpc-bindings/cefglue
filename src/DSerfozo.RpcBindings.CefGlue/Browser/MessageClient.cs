@@ -1,14 +1,15 @@
 ﻿using System;
+using DSerfozo.CefGlue.Contract.Browser;
+using DSerfozo.CefGlue.Contract.Common;
 using DSerfozo.RpcBindings.CefGlue.Common;
-using Xilium.CefGlue;
 
 namespace DSerfozo.RpcBindings.CefGlue.Browser
 {
-    public class MessageClient : CefClient
+    public class MessageClient : ICefClient
     {
         public event EventHandler<ProcessMessageReceivedArgs> ProcessMessageReceived;
 
-        protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        bool ICefClient.OnProcessMessageReceived(ICefBrowser browser, CefProcessId sourceProcess, ICefProcessMessage message)
         {
             var args = new ProcessMessageReceivedArgs(browser, message);
 

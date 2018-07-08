@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using DSerfozo.RpcBindings.CefGlue.Renderer.Model;
+using DSerfozo.CefGlue.Contract.Common;
 using DSerfozo.RpcBindings.Contract.Communication.Model;
 using DSerfozo.RpcBindings.Contract.Marshaling;
 using DSerfozo.RpcBindings.Contract.Marshaling.Model;
 using DSerfozo.RpcBindings.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -17,8 +17,8 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
         public static readonly IDictionary<string, Type> KnownTypes = new Dictionary<string, Type>()
         {
             {ObjectDescriptor.TypeId, typeof(ObjectDescriptor)},
-            {RpcRequest<CefValue>.TypeId, typeof(RpcRequest<CefValue>)},
-            {RpcResponse<CefValue>.TypeId, typeof(RpcResponse<CefValue>)},
+            {RpcRequest<ICefValue>.TypeId, typeof(RpcRequest<ICefValue>)},
+            {RpcResponse<ICefValue>.TypeId, typeof(RpcResponse<ICefValue>)},
             {CallbackDescriptor.TypeId, typeof(CallbackDescriptor)},
             {ObjectSerializer.DictionaryTypeId, typeof(Dictionary<string, object>)},
             {MethodDescriptor.TypeId, typeof(MethodDescriptor) },
@@ -29,14 +29,14 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return type?.IsPrimitive == false && !type.IsValueType && !type.IsEnum && type != typeof(Type);
         }
 
-        public bool CanHandle(CefValue cefValue, Type targetType)
+        public bool CanHandle(ICefValue cefValue, Type targetType)
         {
             return cefValue.GetValueType() == CefValueType.Dictionary && targetType?.IsPrimitive == false &&
                    !targetType.IsValueType &&
                    !targetType.IsEnum;
         }
 
-        public CefValue Serialize(object obj, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object obj, HashSet<object> seen, ObjectSerializer objectSerializer)
         {
             var type = obj?.GetType();
 
@@ -87,7 +87,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return typeIdAttribute?.Id ?? ObjectSerializer.DictionaryTypeId;
         }
 
-        public object Deserialize(CefValue value, Type targetType, ObjectSerializer objectSerializer)
+        public object Deserialize(ICefValue value, Type targetType, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(value, targetType))
             {

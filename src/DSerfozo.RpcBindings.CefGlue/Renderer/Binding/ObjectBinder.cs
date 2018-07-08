@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Model;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
 using DSerfozo.RpcBindings.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Binding
 {
@@ -23,7 +24,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Binding
             propertyDescriptors = descriptor.Properties?.Select(p => p.Value).OfType<CefPropertyDescriptor>().ToList();
         }
 
-        public CefV8Value BindToNew()
+        public ICefV8Value BindToNew()
         {
             var obj = CefV8Value.CreateObject();
 
@@ -31,7 +32,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Binding
 
             propertyDescriptors?.ForEach(c =>
             {
-                var value = (CefV8Value) v8Serializer.Deserialize(c.ListValue, typeof(CefV8Value));
+                var value = (ICefV8Value) v8Serializer.Deserialize(c.ListValue, typeof(ICefV8Value));
                 obj.SetValue(c.Name, value, CefV8PropertyAttribute.ReadOnly);
                 c.ListValue.Dispose();
             });

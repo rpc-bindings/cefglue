@@ -1,12 +1,12 @@
 ﻿using System;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Common;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
     public interface ITypeDeserializer
     {
-        bool CanHandle(CefValue cefValue, Type targetType);
+        bool CanHandle(ICefValue cefValue, Type targetType);
 
-        object Deserialize(CefValue value, Type targetType, ObjectSerializer objectSerializer);
+        object Deserialize(ICefValue value, Type targetType, ObjectSerializer objectSerializer);
     }
 }

@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DSerfozo.CefGlue.Contract.Common;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
 using DSerfozo.RpcBindings.Contract.Communication.Model;
 using DSerfozo.RpcBindings.Execution.Model;
 using DSerfozo.RpcBindings.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Handlers
 {
-    public class FunctionHandler : CefV8Handler
+    public class FunctionHandler : ICefV8Handler
     {
         private readonly long objectId;
         private readonly MethodDescriptor descriptor;
@@ -25,7 +28,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Handlers
             this.functionCallRegistry = functionCallRegistry;
         }
 
-        protected override bool Execute(string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue,
+        public bool Execute(string name, ICefV8Value obj, ICefV8Value[] arguments, out ICefV8Value returnValue,
             out string exception)
         {
             returnValue = null;
@@ -39,9 +42,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Handlers
             var executionId = functionCallRegistry.Save(frameId, out var promise);
             returnValue = promise.Object;
 
-            var message = new RpcResponse<CefValue>
+            var message = new RpcResponse<ICefValue>
             {
-                MethodExecution = new MethodExecution<CefValue>
+                MethodExecution = new MethodExecution<ICefValue>
                 {
                     ExecutionId = executionId,
                     MethodId = descriptor.Id,

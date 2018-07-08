@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Common;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -11,14 +12,14 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return type == typeof(decimal) || type == typeof(DateTime);
         }
 
-        public bool CanHandle(CefValue cefValue, Type targetType)
+        public bool CanHandle(ICefValue cefValue, Type targetType)
         {
             return (targetType == typeof(decimal) && (cefValue.GetValueType() == CefValueType.Double ||
                                                       cefValue.GetValueType() == CefValueType.Int)) ||
                    (targetType == typeof(DateTime) && cefValue.IsType(CefTypes.Time));
         }
 
-        public CefValue Serialize(object obj, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object obj, HashSet<object> seen, ObjectSerializer objectSerializer)
         {
             var type = obj.GetType();
             if (!CanHandle(type))
@@ -38,7 +39,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return result;
         }
 
-        public object Deserialize(CefValue value, Type targetType, ObjectSerializer objectSerializer)
+        public object Deserialize(ICefValue value, Type targetType, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(value, targetType))
             {

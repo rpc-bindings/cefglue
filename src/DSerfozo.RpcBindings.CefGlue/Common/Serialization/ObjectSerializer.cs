@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Common;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -40,9 +41,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return ComplexTypeSerializer.KnownTypes.ContainsKey(typeId);
         }
 
-        public CefValue Serialize(object obj, HashSet<object> seen)
+        public ICefValue Serialize(object obj, HashSet<object> seen)
         {
-            CefValue result;
+            ICefValue result;
 
             var type = obj?.GetType();
             var serializer = Serializers.FirstOrDefault(s => s.CanHandle(type));
@@ -60,7 +61,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return result;
         }
 
-        public object Deserialize(CefValue value, Type targetType, int? index = null, string key = null)
+        public object Deserialize(ICefValue value, Type targetType, int? index = null, string key = null)
         {
             var underlyingType = Nullable.GetUnderlyingType(targetType);
             if (underlyingType != null)

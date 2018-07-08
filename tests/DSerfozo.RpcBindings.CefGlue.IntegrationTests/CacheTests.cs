@@ -63,7 +63,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests
                 browser.Repository.AddBinding("cachetest3", new object());
 
                 int count = 0;
-                browser.CefClient.ProcessMessageReceived += (sender, args) =>
+                browser.MessageClient.ProcessMessageReceived += (sender, args) =>
                 {
                     if(args.Message.Name == Messages.RpcResponseMessage)
                     {

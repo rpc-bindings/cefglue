@@ -1,8 +1,9 @@
-﻿using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
+﻿using DSerfozo.CefGlue.Contract.Renderer;
+using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Handlers;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
 using DSerfozo.RpcBindings.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Binding
 {
@@ -21,7 +22,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Binding
             this.functionCallRegistry = functionCallRegistry;
         }
 
-        public void Bind(CefV8Value cefV8Value)
+        public void Bind(ICefV8Value cefV8Value)
         {
             using (var func = CefV8Value.CreateFunction(descriptor.Name, new FunctionHandler(objectId, descriptor, v8Serializer, functionCallRegistry)))
             {

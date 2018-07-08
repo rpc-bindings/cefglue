@@ -29,8 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DSerfozo.CefGlue.Contract" Version="1.0.0-CI1" />
     <PackageReference Include="DSerfozo.RpcBindings" Version="1.0.0-CI6" />
-    <PackageReference Include="DSerfozo.Unofficial.Xilium.CefGlue" Version="64.0.0" />
   </ItemGroup>
 
 </Project>

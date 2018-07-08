@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Xilium.CefGlue;
+using System.Linq;
+using DSerfozo.CefGlue.Contract.Common;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -8,44 +10,44 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
     {
         private static readonly HashSet<Type> CefTypes = new HashSet<Type>
         {
-            typeof(CefValue),
-            typeof(CefDictionaryValue),
-            typeof(CefListValue)
+            typeof(ICefValue),
+            typeof(ICefDictionaryValue),
+            typeof(ICefListValue)
         };
 
         public bool CanHandle(Type type)
         {
-            return CefTypes.Contains(type);
+            return CefTypes.Any(t => t.IsAssignableFrom(type));
         }
 
-        public bool CanHandle(CefValue cefValue, Type targetType)
+        public bool CanHandle(ICefValue cefValue, Type targetType)
         {
-            return targetType == typeof(CefValue);
+            return targetType == typeof(ICefValue);
         }
 
-        public CefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
         {
-            if (source is CefValue value)
+            if (source is ICefValue value)
             {
                 return value;
             }
-            else if (source is CefDictionaryValue)
+            else if (source is ICefDictionaryValue)
             {
                 var result = CefValue.Create();
-                result.SetDictionary((CefDictionaryValue) source);
+                result.SetDictionary((ICefDictionaryValue) source);
                 return result;
             }
-            else if (source is CefListValue)
+            else if (source is ICefListValue)
             {
                 var result = CefValue.Create();
-                result.SetList((CefListValue) source);
+                result.SetList((ICefListValue) source);
                 return result;
             }
 
             return null;
         }
 
-        public object Deserialize(CefValue value, Type targetType, ObjectSerializer objectSerializer)
+        public object Deserialize(ICefValue value, Type targetType, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(value, targetType))
             {

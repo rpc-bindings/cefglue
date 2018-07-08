@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using DSerfozo.CefGlue.Contract.Common;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Handlers;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Services;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefGlobals;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer
 {
-    public class MessageRenderProcessHandler : CefRenderProcessHandler
+    public class MessageRenderProcessHandler : ICefRenderProcessHandler
     {
         private readonly IDictionary<int, BrowserController> browsers = new Dictionary<int, BrowserController>();
         private readonly ExtensionHandler handler;
         private readonly string bindingExtensionName;
 
         private readonly PromiseService promiseService;
-        //private PromiseService promiseService;
 
         public event EventHandler<ProcessMessageReceivedArgs> ProcessMessageReceived;
 
@@ -30,7 +31,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             promiseService = new PromiseService(promiseResults);
         }
 
-        protected override bool OnBeforeNavigation(CefBrowser browser, CefFrame frame, CefRequest request, CefNavigationType navigation_type,
+        public bool OnBeforeNavigation(ICefBrowser browser, ICefFrame frame, ICefRequest request, CefNavigationType navigation_type,
             bool isRedirect)
         {
             if (browsers.TryGetValue(browser.Identifier, out var browserController))
@@ -41,7 +42,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             return false;
         }
 
-        protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
+        public void OnContextReleased(ICefBrowser browser, ICefFrame frame, ICefV8Context context)
         {
             if (browsers.TryGetValue(browser.Identifier, out var browserController))
             {
@@ -49,12 +50,12 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
         }
 
-        protected override void OnBrowserCreated(CefBrowser browser)
+        public void OnBrowserCreated(ICefBrowser browser)
         {
             browsers.Add(browser.Identifier, new BrowserController(browser, promiseService));
         }
 
-        protected override void OnBrowserDestroyed(CefBrowser browser)
+        public void OnBrowserDestroyed(ICefBrowser browser)
         {
             if (browsers.TryGetValue(browser.Identifier, out var browserController))
             {
@@ -63,7 +64,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
         }
 
-        protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
+        public void OnContextCreated(ICefBrowser browser, ICefFrame frame, ICefV8Context context)
         {
             if (browsers.TryGetValue(browser.Identifier, out var browserController))
             {
@@ -71,16 +72,16 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
             }
         }
 
-        protected override void OnWebKitInitialized()
+        public void OnWebKitInitialized()
         {
             CefRuntime.RegisterExtension(bindingExtensionName,
                 EmbeddedResourceReader.Read(typeof(MessageRenderProcessHandler), "/Renderer/Javascript/extension.js"),
                 handler);
-            base.OnWebKitInitialized();
+            //base.OnWebKitInitialized();
         }
 
-        protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess,
-            CefProcessMessage message)
+        public bool OnProcessMessageReceived(ICefBrowser browser, CefProcessId sourceProcess,
+            ICefProcessMessage message)
         {
             var handled = false;
             if (browsers.TryGetValue(browser.Identifier, out var browserController))

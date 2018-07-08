@@ -1,6 +1,7 @@
 ﻿using System;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Util;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Services
 {
@@ -25,13 +26,13 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Services
 
         public Promise CreatePromise()
         {
-            using(var context = CefV8Context.GetCurrentContext())
+            using (var context = CefV8Context.GetCurrentContext())
             using (var global = context.GetGlobal())
-                using(var s = global.GetValue(HelperObjectName))
+            using (var s = global.GetValue(HelperObjectName))
             {
                 var userData = s.GetUserData() as PromiseUserData;
                 var promiseCreator = userData.PromiseCreator;
-                using (var promiseData = promiseCreator.ExecuteFunction(null, new CefV8Value[] { }))
+                using (var promiseData = promiseCreator.ExecuteFunction(null, new ICefV8Value[] { }))
                 {
                     if (promiseData == null && promiseCreator.HasException)
                     {
@@ -48,7 +49,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Services
             }
         }
 
-        public bool IsPromise(CefV8Value v8Value, CefV8Context context)
+        public bool IsPromise(ICefV8Value v8Value, ICefV8Context context)
         {
             using (new ContextHelper(context))
             using (var global = context.GetGlobal())
@@ -63,7 +64,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Services
             }
         }
 
-        public void Then(CefV8Value promise, CefV8Context context, Action<PromiseResult> continuation)
+        public void Then(ICefV8Value promise, ICefV8Context context, Action<PromiseResult> continuation)
         {
             var id = pendingPromises.Save(context.GetFrame().Identifier, new PendingPromise
             {

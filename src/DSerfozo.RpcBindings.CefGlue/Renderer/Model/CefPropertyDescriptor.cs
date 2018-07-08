@@ -1,13 +1,13 @@
-﻿using DSerfozo.RpcBindings.Model;
-using Xilium.CefGlue;
+﻿using DSerfozo.CefGlue.Contract.Common;
+using DSerfozo.RpcBindings.Model;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Model
 {
     public class CefPropertyDescriptor : PropertyDescriptor
     {
-        public CefValue ListValue { get; }
+        public ICefValue ListValue { get; }
 
-        public CefPropertyDescriptor(long id, string name, CefValue value)
+        public CefPropertyDescriptor(long id, string name, ICefValue value)
         {
             Id = id;
             ListValue = value;

@@ -1,20 +1,21 @@
 ﻿using System;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Renderer;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
 {
     public class Promise : IDisposable
     {
-        private readonly CefV8Value promise;
-        private readonly CefV8Value resolve;
-        private readonly CefV8Value reject;
-        private readonly CefV8Context context;
+        private readonly ICefV8Value promise;
+        private readonly ICefV8Value resolve;
+        private readonly ICefV8Value reject;
+        private readonly ICefV8Context context;
 
-        public CefV8Context Context => context;
+        public ICefV8Context Context => context;
 
-        public CefV8Value Object => promise;
+        public ICefV8Value Object => promise;
 
-        public Promise(CefV8Value promise, CefV8Value resolve, CefV8Value reject, CefV8Context context)
+        public Promise(ICefV8Value promise, ICefV8Value resolve, ICefV8Value reject, ICefV8Context context)
         {
             this.promise = promise;
             this.resolve = resolve;
@@ -30,7 +31,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
             }
         }
 
-        public void Resolve(CefV8Value val)
+        public void Resolve(ICefV8Value val)
         {
             resolve.ExecuteFunction(null, new[] {val});
         }

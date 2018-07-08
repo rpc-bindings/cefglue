@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Common;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -8,6 +8,6 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
     {
         bool CanHandle(Type type);
 
-        CefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer);
+        ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer);
     }
 }

@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DSerfozo.CefGlue.Contract.Common;
+using DSerfozo.CefGlue.Contract.Renderer;
 using DSerfozo.RpcBindings.CefGlue.Common;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.CefGlue.Renderer.Services;
 using DSerfozo.RpcBindings.Contract.Communication.Model;
 using DSerfozo.RpcBindings.Execution.Model;
-using Xilium.CefGlue;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
+using static DSerfozo.CefGlue.Contract.Renderer.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
 {
     public class Callback : IDisposable
     {
-        private readonly CefV8Value function;
+        private readonly ICefV8Value function;
         private readonly PromiseService promiseService;
         private readonly ObjectSerializer v8Serializer;
-        private readonly CefV8Context context;
+        private readonly ICefV8Context context;
 
-        public CefV8Context Context => context;
+        public ICefV8Context Context => context;
 
-        public Callback(CefV8Value function,  PromiseService promiseService, ObjectSerializer v8Serializer)
+        public Callback(ICefV8Value function,  PromiseService promiseService, ObjectSerializer v8Serializer)
         {
             this.function = function;
             this.promiseService = promiseService;
@@ -28,12 +31,12 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
             context = CefV8Context.GetCurrentContext();
         }
 
-        public void Execute(CallbackExecution<CefValue> execution)
+        public void Execute(CallbackExecution<ICefValue> execution)
         {
-            CefV8Exception exception = null;
+            ICefV8Exception exception = null;
             using (new ContextHelper(context))
             {
-                var cefV8Values = execution.Parameters.Select(s => (CefV8Value)v8Serializer.Deserialize(s, typeof(CefV8Value))).ToArray();
+                var cefV8Values = execution.Parameters.Select(s => (ICefV8Value)v8Serializer.Deserialize(s, typeof(ICefV8Value))).ToArray();
                 var result = function.ExecuteFunction(null, cefV8Values);
 
 
@@ -61,9 +64,9 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
             }
         }
 
-        private void CallbackDone(PromiseResult promiseResult, CefBrowser browser, long executionId)
+        private void CallbackDone(PromiseResult promiseResult, ICefBrowser browser, long executionId)
         {
-            var callbackResult = new CallbackResult<CefValue>
+            var callbackResult = new CallbackResult<ICefValue>
             {
                 ExecutionId = executionId,
                 Success = promiseResult.Success
@@ -78,7 +81,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
                 callbackResult.Error = promiseResult.Error;
             }
 
-            var response = new RpcResponse<CefValue>
+            var response = new RpcResponse<ICefValue>
             {
                 CallbackResult = callbackResult
             };

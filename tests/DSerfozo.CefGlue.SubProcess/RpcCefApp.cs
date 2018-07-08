@@ -1,4 +1,5 @@
-﻿using DSerfozo.RpcBindings.CefGlue.Common;
+﻿using DSerfozo.CefGlue.Renderer;
+using DSerfozo.RpcBindings.CefGlue.Common;
 using DSerfozo.RpcBindings.CefGlue.Renderer;
 using Xilium.CefGlue;
 
@@ -34,9 +35,9 @@ namespace DSerfozo.CefGlue.SubProcess
         }
     }
 
-    internal class Handler : MessageRenderProcessHandler
+    internal class Handler : CefRenderProcessHandlerBase
     {
-        public Handler(string bindingExtensionName) : base(bindingExtensionName)
+        public Handler(string bindingExtensionName) : base(new MessageRenderProcessHandler(bindingExtensionName))
         {
         }
 

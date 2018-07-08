@@ -2,8 +2,8 @@
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using DSerfozo.CefGlue.Contract.Common;
 using DSerfozo.RpcBindings.CefGlue.IntegrationTests.Util;
-using DSerfozo.RpcBindings.Contract;
 using DSerfozo.RpcBindings.Contract.Marshaling;
 using DSerfozo.RpcBindings.Extensions;
 using DSerfozo.RpcBindings.Marshaling;
@@ -38,7 +38,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests
 
             public void TestCallbackDispose(ICallback callback)
             {
-                var cb = (Callback<CefValue>) callback;
+                var cb = (Callback<ICefValue>) callback;
                 id = cb.Id;
 
                 callback.Dispose();
@@ -80,7 +80,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests
                 await browser.LoadAsync(url);
                 await browser.RunTest("testCallbackDispose");
 
-                await Assert.ThrowsAsync<Exception>(() => new Callback<CefValue>(obj.Id, browser.BindingHost.CallbackExecutor,
+                await Assert.ThrowsAsync<Exception>(() => new Callback<ICefValue>(obj.Id, browser.BindingHost.CallbackExecutor,
                     contet => { }).ExecuteAsync());
             }
         }

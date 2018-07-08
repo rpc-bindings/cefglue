@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using DSerfozo.CefGlue.Contract.Common;
 using DSerfozo.RpcBindings.CefGlue.Common.Serialization;
 using DSerfozo.RpcBindings.Contract.Marshaling;
-using Xilium.CefGlue;
 
 namespace DSerfozo.RpcBindings.CefGlue.Browser
 {
-    public class CefValueBinder : IPlatformBinder<CefValue>
+    public class CefValueBinder : IPlatformBinder<ICefValue>
     {
         private readonly ObjectSerializer objectSerializer;
 
@@ -14,12 +14,12 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
             this.objectSerializer = objectSerializer;
         }
 
-        public CefValue BindToWire(object obj)
+        public ICefValue BindToWire(object obj)
         {
             return objectSerializer.Serialize(obj, new HashSet<object>());
         }
 
-        public object BindToNet(Binding<CefValue> binding)
+        public object BindToNet(Binding<ICefValue> binding)
         {
             return objectSerializer.Deserialize(binding.Value, binding.TargetType);
         }

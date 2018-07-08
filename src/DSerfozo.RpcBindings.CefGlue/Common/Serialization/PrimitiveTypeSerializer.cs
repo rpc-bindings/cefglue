@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xilium.CefGlue;
+using DSerfozo.CefGlue.Contract.Common;
+using static DSerfozo.CefGlue.Contract.Common.CefFactories;
 
 namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
@@ -21,7 +22,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return type?.IsPrimitive == true && type != typeof(IntPtr) && type !=  typeof(UIntPtr);
         }
 
-        public bool CanHandle(CefValue cefValue, Type targetType)
+        public bool CanHandle(ICefValue cefValue, Type targetType)
         {
             var cefValueType = cefValue.GetValueType();
             return (targetType?.IsPrimitive == true && SupportedTypes.Contains(cefValueType)) ||
@@ -30,7 +31,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
                    (cefValueType == CefValueType.Bool && targetType == typeof(object));
         }
 
-        public CefValue Serialize(object obj, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object obj, HashSet<object> seen, ObjectSerializer objectSerializer)
         {
             var type = obj.GetType();
             if (!CanHandle(type))
@@ -91,7 +92,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return result;
         }
 
-        public object Deserialize(CefValue value, Type targetType, ObjectSerializer objectSerializer)
+        public object Deserialize(ICefValue value, Type targetType, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(value, targetType))
             {
