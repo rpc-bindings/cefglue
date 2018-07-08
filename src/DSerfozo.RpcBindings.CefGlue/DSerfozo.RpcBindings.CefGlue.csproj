@@ -28,9 +28,19 @@
     <EmbeddedResource Include="Renderer\Javascript\extension.js" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DSerfozo.CefGlue.Contract" Version="1.0.0-CI1" />
-    <PackageReference Include="DSerfozo.RpcBindings" Version="1.0.0-CI6" />
-  </ItemGroup>
+   <Choose>
+    <When Condition="'$(IsInAllRepo)' == 'True'">
+      <ItemGroup>
+        <ProjectReference Include="..\..\..\core\src\DSerfozo.RpcBindings\DSerfozo.RpcBindings.csproj" />
+        <ProjectReference Include="..\..\..\cefglue-contract\src\DSerfozo.CefGlue.Contract\DSerfozo.CefGlue.Contract.csproj" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="DSerfozo.RpcBindings" Version="1.0.0-CI5" />
+        <PackageReference Include="DSerfozo.CefGlue.Contract" Version="1.0.0-CI1" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
 </Project>

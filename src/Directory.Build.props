@@ -1,4 +1,5 @@
 <Project>
+  <Import Condition="Exists('$(MSBuildThisFileDirectory)\..\..\Directory.Build.props')" Project="$(MSBuildThisFileDirectory)\..\..\Directory.Build.props" />
   <Import Project="../common/build/version.props" />
 
   <PropertyGroup>

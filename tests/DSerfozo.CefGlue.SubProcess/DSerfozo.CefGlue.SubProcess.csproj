@@ -22,11 +22,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSerfozo.CefGlue" Version="64.0.0-CI2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\DSerfozo.RpcBindings.CefGlue\DSerfozo.RpcBindings.CefGlue.csproj" />
   </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(IsInAllRepo)' == 'True'">
+      <ItemGroup>
+        <ProjectReference Include="..\..\..\cefglue-connector\src\DSerfozo.CefGlue\DSerfozo.CefGlue.csproj" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="DSerfozo.CefGlue" Version="64.0.0-CI2" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
 </Project>

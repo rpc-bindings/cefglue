@@ -16,13 +16,25 @@
 
   <ItemGroup>
     <PackageReference Include="cef.redist.x86" Version="3.3282.1741" />
-    <PackageReference Include="DSerfozo.CefGlue" Version="64.0.0-CI2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="Moq" Version="4.8.1" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(IsInAllRepo)' == 'True'">
+      <ItemGroup>
+        <ProjectReference Include="..\..\..\cefglue-connector\src\DSerfozo.CefGlue\DSerfozo.CefGlue.csproj" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="DSerfozo.CefGlue" Version="64.0.0-CI2" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DSerfozo.RpcBindings.CefGlue\DSerfozo.RpcBindings.CefGlue.csproj" />
