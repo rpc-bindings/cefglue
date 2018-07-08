@@ -36,7 +36,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return result;
         }
 
-        public ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object source, Stack<object> seen, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(source?.GetType()))
             {

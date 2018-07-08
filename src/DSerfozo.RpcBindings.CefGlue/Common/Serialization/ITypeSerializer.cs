@@ -8,6 +8,6 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
     {
         bool CanHandle(Type type);
 
-        ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer);
+        ICefValue Serialize(object source, Stack<object> seen, ObjectSerializer objectSerializer);
     }
 }

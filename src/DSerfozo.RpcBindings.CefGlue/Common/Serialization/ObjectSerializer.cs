@@ -8,6 +8,26 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 {
     public class ObjectSerializer
     {
+        protected sealed class SeenDisposable : IDisposable
+        {
+            private readonly Stack<object> stack;
+            private readonly bool pop;
+
+            public SeenDisposable(Stack<object> stack, bool pop)
+            {
+                this.stack = stack;
+                this.pop = pop;
+            }
+
+            public void Dispose()
+            {
+                if (pop)
+                {
+                    stack.Pop();
+                }
+            }
+        }
+
         public const string TypeIdPropertyName = "TypeId";
         public const string ValuePropertyName = "Value";
         public const string DictionaryTypeId = "25CDD082-4A67-48A0-A342-1FAB77BC6450";
@@ -41,21 +61,29 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return ComplexTypeSerializer.KnownTypes.ContainsKey(typeId);
         }
 
-        public ICefValue Serialize(object obj, HashSet<object> seen)
+        public ICefValue Serialize(object obj)
+        {
+            return Serialize(obj, new Stack<object>());
+        }
+
+        public ICefValue Serialize(object obj, Stack<object> seen)
         {
             ICefValue result;
 
             var type = obj?.GetType();
             var serializer = Serializers.FirstOrDefault(s => s.CanHandle(type));
 
-            if (serializer != null && HandleSeen(seen, obj, type))
+            using (HandleSeen(seen, obj, type, out var canSerialize))
             {
-                result = serializer.Serialize(obj, seen, this);
-            }
-            else
-            {
-                result = CefValue.Create();
-                result.SetNull();
+                if (serializer != null && canSerialize)
+                {
+                    result = serializer.Serialize(obj, seen, this);
+                }
+                else
+                {
+                    result = CefValue.Create();
+                    result.SetNull();
+                }
             }
 
             return result;
@@ -73,19 +101,21 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return deserializer?.Deserialize(value, targetType, this);
         }
 
-        protected virtual bool HandleSeen(HashSet<object> seen, object current, Type currentType)
+        protected virtual IDisposable HandleSeen(Stack<object> seen, object current, Type currentType, out bool go)
         {
-            var result = true;
-            if (!currentType.IsPrimitive && !currentType.IsValueType && currentType != typeof(string))
+            var pushed = false;
+            go = true;
+            if (currentType?.IsPrimitive == false && !currentType.IsValueType && currentType != typeof(string))
             {
-                result = !seen.Contains(current);
-                if (result)
+                go = !seen.Contains(current);
+                if (go)
                 {
-                    seen.Add(current);
+                    seen.Push(current);
+                    pushed = true;
                 }
             }
 
-            return result;
+            return new SeenDisposable(seen, pushed);
         }
     }
 }

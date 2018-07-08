@@ -156,7 +156,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer
         private void SendResponse(RpcResponse<ICefValue> response)
         {
             var msg = CefProcessMessage.Create(Messages.RpcResponseMessage);
-            var serialized = objectSerializer.Serialize(response, new HashSet<object>());
+            var serialized = objectSerializer.Serialize(response);
             msg.Arguments.SetValue(0, serialized);
 
             browser.SendProcessMessage(CefProcessId.Browser, msg);

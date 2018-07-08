@@ -19,7 +19,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return cefValue.GetValueType() == CefValueType.Dictionary && targetType == typeof(PropertyDescriptor);
         }
 
-        public ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object source, Stack<object> seen, ObjectSerializer objectSerializer)
         {
             if (!CanHandle(source?.GetType()))
             {
@@ -36,7 +36,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
                 value.SetInt64(nameof(actualSource.Id), actualSource.Id);
                 value.SetString(nameof(PropertyDescriptor.Name), actualSource.Name);
                 value.SetValue(nameof(PropertyDescriptor.Value),
-                    objectSerializer.Serialize(actualSource.Value, new HashSet<object>()));
+                    objectSerializer.Serialize(actualSource.Value));
 
                 resultDict.SetDictionary(ObjectSerializer.ValuePropertyName, value);
                 result.SetDictionary(resultDict);

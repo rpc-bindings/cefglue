@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using DSerfozo.CefGlue.Contract.Common;
 using DSerfozo.CefGlue.Contract.Renderer;
@@ -74,7 +73,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
 
             if (promiseResult.Success)
             {
-                callbackResult.Result = v8Serializer.Serialize(promiseResult.Result, new HashSet<object>());
+                callbackResult.Result = v8Serializer.Serialize(promiseResult.Result);
             }
             else if(!string.IsNullOrWhiteSpace(promiseResult.Error))
             {
@@ -86,7 +85,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Util
                 CallbackResult = callbackResult
             };
             var msg = CefProcessMessage.Create(Messages.RpcResponseMessage);
-            var serialized = v8Serializer.Serialize(response, new HashSet<object>());
+            var serialized = v8Serializer.Serialize(response);
             msg.Arguments.SetValue(0, serialized);
 
             browser.SendProcessMessage(CefProcessId.Browser, msg);

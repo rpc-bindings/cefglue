@@ -61,7 +61,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
             var message = CefProcessMessage.Create(Messages.RpcRequestMessage);
             try
             {
-                message.Arguments.SetValue(0, objectSerializer.Serialize(rpcRequest, new HashSet<object>()));
+                message.Arguments.SetValue(0, objectSerializer.Serialize(rpcRequest));
 
                 browser.SendProcessMessage(CefProcessId.Renderer, message);
             }

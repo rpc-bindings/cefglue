@@ -49,14 +49,14 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Handlers
                     ExecutionId = executionId,
                     MethodId = descriptor.Id,
                     ObjectId = objectId,
-                    Parameters = arguments.Select(a => v8Serializer.Serialize(a, new HashSet<object>())).ToArray()
+                    Parameters = arguments.Select(a => v8Serializer.Serialize(a)).ToArray()
                 }
             };
 
             using (var context = CefV8Context.GetCurrentContext())
             {
                 var msg = CefProcessMessage.Create(Messages.RpcResponseMessage);
-                var serialized = v8Serializer.Serialize(message, new HashSet<object>());
+                var serialized = v8Serializer.Serialize(message);
                 msg.Arguments.SetValue(0, serialized.Copy());
 
                 context.GetBrowser().SendProcessMessage(CefProcessId.Browser, msg);

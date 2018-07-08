@@ -25,7 +25,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
             return targetType == typeof(ICefValue);
         }
 
-        public ICefValue Serialize(object source, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object source, Stack<object> seen, ObjectSerializer objectSerializer)
         {
             if (source is ICefValue value)
             {

@@ -19,7 +19,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
                    (targetType == typeof(DateTime) && cefValue.IsType(CefTypes.Time));
         }
 
-        public ICefValue Serialize(object obj, HashSet<object> seen, ObjectSerializer objectSerializer)
+        public ICefValue Serialize(object obj, Stack<object> seen, ObjectSerializer objectSerializer)
         {
             var type = obj.GetType();
             if (!CanHandle(type))

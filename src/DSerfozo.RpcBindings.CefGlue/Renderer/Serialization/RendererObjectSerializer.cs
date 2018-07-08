@@ -8,20 +8,20 @@ namespace DSerfozo.RpcBindings.CefGlue.Renderer.Serialization
 {
     public class RendererObjectSerializer : ObjectSerializer
     {
-        protected override bool HandleSeen(HashSet<object> seen, object current, Type currentType)
+        protected override IDisposable HandleSeen(Stack<object> seen, object current, Type currentType, out bool go)
         {
             if (typeof(ICefV8Value).IsAssignableFrom(currentType))
             {
-                var result = !seen.OfType<ICefV8Value>().Any(v => v.IsSame(current as ICefV8Value));
-                if (result)
+                go = !seen.OfType<ICefV8Value>().Any(v => v.IsSame(current as ICefV8Value));
+                if (go)
                 {
-                    seen.Add(current);
+                    seen.Push(current);
                 }
 
-                return result;
+                return new SeenDisposable(seen, go);
             }
 
-            return base.HandleSeen(seen, current, currentType);
+            return base.HandleSeen(seen, current, currentType, out go);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace DSerfozo.RpcBindings.CefGlue.Browser
 
         public ICefValue BindToWire(object obj)
         {
-            return objectSerializer.Serialize(obj, new HashSet<object>());
+            return objectSerializer.Serialize(obj);
         }
 
         public object BindToNet(Binding<ICefValue> binding)
