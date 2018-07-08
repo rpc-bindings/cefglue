@@ -86,8 +86,8 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests
 
             public bool TestDate(DateTime val)
             {
-                return val == DateTime.MinValue.AddYears(2018).AddMonths(3).AddDays(31).AddHours(22).AddMinutes(12)
-                    .AddSeconds(23).AddMilliseconds(450).ToUniversalTime();
+                return val == DateTime.MinValue.AddYears(2018).AddMonths(3).AddDays(31).AddHours(20).AddMinutes(12)
+                    .AddSeconds(23).AddMilliseconds(450);
             }
 
             public bool TestArray(int[] arr)

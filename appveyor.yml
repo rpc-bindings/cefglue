@@ -15,5 +15,5 @@ deploy:
 - provider: NuGet
   server: https://www.myget.org/F/dserfozo/api/v2/package
   api_key:
-    secure: uz70X1rDufUiuaV59aw5GKHF6lLvRCe9QkBZQkjGaxwAP/LSuVHdRAdEwRIZhkai
+    secure: ibHoIgBca+Soq6sDbpcf0KDmNKqBccbvVMTcxSvc3GogObcrWsgkXhQrIo/1lV2o
   skip_symbols: true

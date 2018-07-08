@@ -85,8 +85,7 @@ namespace DSerfozo.RpcBindings.CefGlue.IntegrationTests
 
             public DateTime TestDate()
             {
-                return DateTime.MinValue.AddYears(2018).AddMonths(3).AddDays(31).AddHours(22).AddMinutes(12)
-                    .AddSeconds(23).AddMilliseconds(450);
+                return new DateTime(2019, 5, 2, 20, 12, 23, 450, DateTimeKind.Utc);
             }
 
             public int[] TestArray()

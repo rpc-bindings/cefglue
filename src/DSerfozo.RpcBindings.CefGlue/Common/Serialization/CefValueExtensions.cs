@@ -132,7 +132,12 @@ namespace DSerfozo.RpcBindings.CefGlue.Common.Serialization
 
         private static void SetTime(Action<ICefBinaryValue> setValue, DateTime value)
         {
-            var totalSecondsBytes = BitConverter.GetBytes(value.ToBinary());
+            var valueInUtc = value;
+            if (value.Kind != DateTimeKind.Utc)
+            {
+                valueInUtc = value.ToUniversalTime();
+            }
+            var totalSecondsBytes = BitConverter.GetBytes(valueInUtc.ToBinary());
             var buffer = new byte[totalSecondsBytes.Length + 1];
             buffer[0] = (byte) CefTypes.Time;
             Array.Copy(totalSecondsBytes, 0, buffer, 1, totalSecondsBytes.Length);
